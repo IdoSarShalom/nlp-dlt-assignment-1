@@ -9,25 +9,33 @@ This project implements emotion classification using GRU (Gated Recurrent Unit) 
 
 ```
 nlp-dlt-assignment-1/
+├── 01_preprocessing.ipynb         # 1️⃣ Text preprocessing notebook
+├── 02_train_gru.ipynb             # 2️⃣ GRU model training (Word2Vec embeddings)
+├── 03_train_lstm.ipynb            # 3️⃣ BiLSTM model training (GloVe embeddings)
+├── 04_model_comparison.ipynb      # 4️⃣ Model comparison notebook
+│
 ├── data/
+│   ├── gru/                       # GRU model artifacts (generated)
+│   │   ├── gru_model.keras
+│   │   ├── gru_tokenizer.pkl
+│   │   └── gru_metadata.pkl
+│   ├── lstm/                      # LSTM model artifacts (generated)
+│   │   ├── lstm_model.keras
+│   │   ├── lstm_tokenizer.pkl
+│   │   └── lstm_metadata.pkl
 │   ├── train.csv                  # Training dataset
 │   ├── validation.csv             # Validation dataset
 │   ├── test.csv                   # Test dataset (optional)
 │   ├── train_preprocessed.pkl     # Preprocessed training data (generated)
 │   ├── validation_preprocessed.pkl # Preprocessed validation data (generated)
-│   ├── test_preprocessed.pkl      # Preprocessed test data (generated)
-│   ├── gru_model.keras            # Trained GRU model (generated)
-│   ├── gru_tokenizer.pkl          # GRU tokenizer (generated)
-│   ├── gru_metadata.pkl           # GRU metadata (generated)
-│   ├── lstm_model.keras           # Trained BiLSTM model (generated)
-│   ├── lstm_tokenizer.pkl         # BiLSTM tokenizer (generated)
-│   └── lstm_metadata.pkl          # BiLSTM metadata (generated)
-├── preprocessing.ipynb            # 1️⃣ Text preprocessing notebook
-├── train_gru.ipynb                # 2️⃣ GRU model training notebook
-├── train_lstm.ipynb               # 3️⃣ BiLSTM model training notebook
-├── model_comparison.ipynb         # 4️⃣ Model comparison notebook
-├── emotions-analysis-gru-94.ipynb # Reference: Original GRU notebook (from Kaggle)
-├── crushing-it-bilstm-rnn-delivers-94-accuracy.ipynb # Reference: Original BiLSTM notebook (from Kaggle)
+│   └── test_preprocessed.pkl      # Preprocessed test data (generated)
+│
+├── references/                    # Reference notebooks
+│   └── emotions-analysis-gru-94.ipynb  # Kaggle reference notebook
+│
+├── EMBEDDINGS_GUIDE.md            # 📖 Pre-trained embeddings guide
+├── CHANGELOG.md                   # 📝 Project changes log
+├── NOTEBOOKS_SUMMARY.md           # 📋 Notebooks summary
 └── README.md                      # This file
 ```
 
@@ -61,13 +69,14 @@ Install all necessary packages for data processing and modeling:
 # Install basic packages via conda
 conda install -y pandas numpy nltk jupyter ipykernel matplotlib seaborn
 
-# Install TensorFlow and scikit-learn via pip (better compatibility)
-pip install tensorflow scikit-learn
+# Install TensorFlow, scikit-learn, and gensim via pip (better compatibility)
+pip install tensorflow scikit-learn gensim
 ```
 
 **Or use conda for everything (if preferred):**
 ```bash
 conda install -y pandas numpy nltk jupyter ipykernel matplotlib seaborn tensorflow scikit-learn
+pip install gensim  # gensim via pip is recommended
 ```
 
 ### Step 4: Register Jupyter Kernel
@@ -97,6 +106,8 @@ The environment includes:
 | **Machine Learning** | | |
 | scikit-learn | 1.7.2 | Machine learning utilities and evaluation metrics |
 | scipy | 1.15.3 | Scientific computing and optimization |
+| **NLP & Embeddings** | | |
+| gensim | 4.4.0 | Pre-trained word embeddings (Word2Vec, GloVe) |
 | **Visualization** | | |
 | matplotlib | 3.10.6 | Data visualization and plotting |
 | seaborn | 0.13.2 | Statistical data visualization |
@@ -190,11 +201,11 @@ This automatically sets:
 
 ### 2️⃣ train_gru.ipynb
 
-Trains a Bidirectional GRU model for emotion classification.
+Trains a Bidirectional GRU model for emotion classification using **Word2Vec** pre-trained embeddings.
 
 **Model Architecture:**
 ```
-Embedding Layer (100-dim)
+Embedding Layer (Word2Vec 300-dim, frozen)
     ↓
 Bidirectional GRU (128 units)
     ↓
@@ -209,25 +220,30 @@ Dropout (0.5)
 Dense (6, Softmax)
 ```
 
+**Embeddings:**
+- 🔵 **Word2Vec** (Google News, 300 dimensions)
+- Captures local context patterns
+- Complements GRU's fast sequential processing
+- Auto-downloads on first run (~1.5 GB)
+
 **Features:**
-- **Loads pre-tokenized sequences** from preprocessing
-- Uses **shared tokenizer** metadata (vocab_size, maxlen)
+- Pre-trained word embeddings for better generalization
 - Early stopping (patience=3)
 - Automatic best weights restoration
 - Training/validation curves visualization
 - Confusion matrix
 - Per-class classification report
-- Saves model and metadata (no separate tokenizer needed)
+- Saves model, tokenizer, and metadata
 
 ---
 
 ### 3️⃣ train_lstm.ipynb
 
-Trains a Bidirectional LSTM model for emotion classification.
+Trains a Bidirectional LSTM model for emotion classification using **GloVe** pre-trained embeddings.
 
 **Model Architecture:**
 ```
-Embedding Layer (100-dim)
+Embedding Layer (GloVe 200-dim, frozen)
     ↓
 Bidirectional LSTM (128 units)
     ↓
@@ -242,14 +258,20 @@ Dropout (0.5)
 Dense (6, Softmax)
 ```
 
+**Embeddings:**
+- 🟢 **GloVe** (Twitter, 200 dimensions)
+- Captures global co-occurrence statistics
+- Trained on social media text (perfect for emotions dataset!)
+- Complements LSTM's long-term dependency learning
+- Auto-downloads on first run (~1.4 GB)
+
 **Features:**
-- **Loads pre-tokenized sequences** from preprocessing
-- Uses **same shared tokenizer** as GRU model
+- Pre-trained word embeddings optimized for Twitter-like text
 - Early stopping (patience=3)
 - Automatic best weights restoration
 - Training/validation curves visualization
 - Confusion matrix and classification report
-- Allows **fair direct comparison** with GRU (identical inputs)
+- Saves model, tokenizer, and metadata
 
 ---
 
@@ -289,6 +311,40 @@ Comprehensive comparison of GRU and BiLSTM models on test data.
 
 ---
 
+## 🎯 Pre-trained Embeddings Strategy
+
+This project uses **different pre-trained word embeddings** for each model to maximize performance:
+
+### Why Different Embeddings?
+
+| Model | Embedding | Dimensions | Training Data | Rationale |
+|-------|-----------|------------|---------------|-----------|
+| **GRU** | Word2Vec | 300 | Google News (3B words) | Local context patterns match GRU's fast sequential processing |
+| **LSTM** | GloVe | 200 | Twitter (2B tweets) | Global statistics complement LSTM's long-term dependencies |
+
+### Benefits
+
+✅ **Transfer Learning**: Leverage billions of words of pre-training  
+✅ **Better Generalization**: Especially important for emotion classification  
+✅ **Faster Convergence**: Models reach good performance in fewer epochs  
+✅ **Domain Alignment**: GloVe trained on Twitter (perfect for social media emotions!)  
+
+### First Run
+
+On first execution, embeddings are automatically downloaded:
+- **Word2Vec**: ~1.5 GB (cached for future use)
+- **GloVe**: ~1.4 GB (cached for future use)
+
+### Advanced Options
+
+Want to experiment? See `EMBEDDINGS_GUIDE.md` for:
+- Fine-tuning embeddings (trainable=True)
+- Using different embedding models
+- Training your own embeddings
+- Performance comparison tips
+
+---
+
 ## 🔧 Troubleshooting
 
 ### NLTK Data Download Issues
@@ -317,6 +373,30 @@ If `conda activate` doesn't work, try:
 ```bash
 source activate nlp-emotions
 ```
+
+### Gensim/Embeddings Download Issues
+
+If embeddings fail to download:
+
+```bash
+# Manually install gensim in the conda environment
+conda activate nlp-emotions
+pip install gensim
+
+# Test the installation
+python -c "import gensim.downloader as api; print('Gensim OK')"
+```
+
+If downloads are slow or fail, you can manually download embeddings:
+- Word2Vec: https://github.com/RaRe-Technologies/gensim-data
+- GloVe: https://nlp.stanford.edu/projects/glove/
+
+### Memory Issues
+
+If you run out of memory loading embeddings:
+- Close other applications
+- Use smaller embedding models (see `EMBEDDINGS_GUIDE.md`)
+- Set `trainable=True` and use smaller custom embeddings
 
 ---
 
