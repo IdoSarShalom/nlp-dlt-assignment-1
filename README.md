@@ -43,13 +43,11 @@ To predict emotions on a new test dataset (`test.csv`):
 
 In order to train the models and reproduce the results:
 
-1. **Exploratory Data Analysis**: Open and run `00_eda.ipynb` to analyze the dataset structure and statistics.
-2. **Preprocessing**: Open `01_preprocessing.ipynb`. 
+1. **Preprocessing**: Open `01_preprocessing.ipynb`. 
    * Run first with `split = 'train'` to generate `data/train_preprocessed.pkl`.
    * Run again with `split = 'validation'` to generate `data/validation_preprocessed.pkl`.
-3. **Train GRU**: Run `02_train_gru.ipynb`. This will download Word2Vec embeddings and train the GRU model.
-4. **Train LSTM**: Run `03_train_lstm.ipynb`. This will download GloVe embeddings and train the LSTM model.
-5. **Evaluation**: Run `04_inference.ipynb` to compare the models and view the results.
+2. **Train GRU**: Run `02_train_gru.ipynb`. This will download Word2Vec embeddings and train the GRU model.
+3. **Train LSTM**: Run `03_train_lstm.ipynb`. This will download GloVe embeddings and train the LSTM model.
 
 ## Libraries to Install 📚
 
