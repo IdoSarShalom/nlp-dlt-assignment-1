@@ -6,7 +6,7 @@ Assignment 1 as part of Bar-Ilan's 83374 "NLP using DL techniques" 🌠.
 
 Implemented in TensorFlow/Keras 🔥.
 
-## Description 🤖
+## Description 🏞️
 
 In this project we implement deep learning models for classifying text into **6 emotion categories**: Sadness, Joy, Love, Anger, Fear, and Surprise. We compare two recurrent architectures - **[Bidirectional GRU](https://arxiv.org/abs/1406.1078)** with Word2Vec embeddings and **[Bidirectional LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf)** with GloVe embeddings - achieving **~93-94% accuracy** on social media text.
 
