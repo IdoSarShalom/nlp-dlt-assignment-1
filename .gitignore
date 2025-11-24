@@ -1,0 +1,21 @@
+# IDEs
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+.ipynb_checkpoints/
+
+# Environment
+.env
+.venv
+env/
+venv/
+
+# Distribution / Packaging
+build/
+dist/
+
+# Logs
+*.log
+
