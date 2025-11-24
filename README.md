@@ -23,23 +23,6 @@ We provide here a short explanation about the structure of this repository:
 * `04_inference.ipynb` contains the inference pipeline, model evaluation, and side-by-side performance comparison on test data.
 * `requirements.txt` contains the Python package dependencies.
 
-## Libraries to Install 📚
-
-**Before trying to run anything please make sure to install all the packages below.**
-
-| Library | Command to Run | Minimal Version |
-| :--- | :--- | :--- |
-| NumPy | `pip install numpy` | 2.2.5 |
-| pandas | `pip install pandas` | 2.3.3 |
-| matplotlib | `pip install matplotlib` | 3.10.6 |
-| seaborn | `pip install seaborn` | 0.13.2 |
-| NLTK | `pip install nltk` | 3.9.2 |
-| scikit-learn | `pip install scikit-learn` | 1.7.2 |
-| TensorFlow | `pip install tensorflow` | 2.20.0 |
-| Keras | `pip install keras` | 3.12.0 |
-| Gensim | `pip install gensim` | 4.4.0 |
-| WordCloud | `pip install wordcloud` | 1.9.4 |
-
 ## Running The Project 🏃
 
 ### Inference 🔎
@@ -67,3 +50,20 @@ In order to train the models and reproduce the results:
 3. **Train GRU**: Run `02_train_gru.ipynb`. This will download Word2Vec embeddings and train the GRU model.
 4. **Train LSTM**: Run `03_train_lstm.ipynb`. This will download GloVe embeddings and train the LSTM model.
 5. **Evaluation**: Run `04_inference.ipynb` to compare the models and view the results.
+
+## Libraries to Install 📚
+
+**Before trying to run anything please make sure to install all the packages below.**
+
+| Library | Command to Run | Minimal Version |
+| :--- | :--- | :--- |
+| NumPy | `pip install numpy` | 2.2.5 |
+| pandas | `pip install pandas` | 2.3.3 |
+| matplotlib | `pip install matplotlib` | 3.10.6 |
+| seaborn | `pip install seaborn` | 0.13.2 |
+| NLTK | `pip install nltk` | 3.9.2 |
+| scikit-learn | `pip install scikit-learn` | 1.7.2 |
+| TensorFlow | `pip install tensorflow` | 2.20.0 |
+| Keras | `pip install keras` | 3.12.0 |
+| Gensim | `pip install gensim` | 4.4.0 |
+| WordCloud | `pip install wordcloud` | 1.9.4 |
