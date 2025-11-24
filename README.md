@@ -17,11 +17,10 @@ We provide here a short explanation about the structure of this repository:
 * `data/train.csv` and `data/validation.csv` contain the raw datasets from the Emotion dataset.
 * `data/gru` and `data/lstm` contain the trained models and tokenizers after running the training notebooks.
 * `00_eda.ipynb` contains Exploratory Data Analysis with comprehensive visualizations, class distribution analysis, and text statistics.
-* `01_preprocessing.ipynb` contains the text preprocessing pipeline including tokenization, padding, and stopword removal. This notebook is run for both training and validation splits.
+* `01_preprocessing.ipynb` contains the text preprocessing pipeline including tokenization, padding, and stopword removal. This notebook runs on any dataset split (train, validation, and test) by setting the `split` variable.
 * `02_train_gru.ipynb` contains the **Bidirectional GRU** architecture training with Word2Vec embeddings.
 * `03_train_lstm.ipynb` contains the **Bidirectional LSTM** architecture training with GloVe embeddings.
-* `04_model_comparison.ipynb` contains the model evaluation, side-by-side performance comparison, and confusion matrix generation.
-* `setup_environment.sh` is an automated script to set up the conda environment and install dependencies.
+* `04_inference.ipynb` (formerly `04_model_comparison.ipynb`) contains the inference pipeline, model evaluation, and side-by-side performance comparison on test data.
 * `requirements.txt` contains the Python package dependencies.
 
 ## Running The Project 🏃
@@ -42,6 +41,20 @@ conda activate nlp-emotions
 bash setup_environment.sh
 ```
 
+### Inference 🔎
+
+To predict emotions on a new test dataset (`test.csv`):
+
+1. **Place Data**: Put the `test.csv` file in the `data/` directory.
+2. **Preprocess**: Open `01_preprocessing.ipynb`.
+   * Set `split = 'test'` in the configuration cell.
+   * Run all cells. This will create `data/test_preprocessed.pkl`.
+3. **Predict & Evaluate**: Run `04_inference.ipynb`. This notebook will:
+   - Load the preprocessed test data.
+   - Load the trained GRU and BiLSTM models.
+   - Generate predictions.
+   - Compare performance and display confusion matrices.
+
 ### Training 🏋️
 
 In order to train the models and reproduce the results:
@@ -52,7 +65,7 @@ In order to train the models and reproduce the results:
    * Run again with `split = 'validation'` to generate `data/validation_preprocessed.pkl`.
 3. **Train GRU**: Run `02_train_gru.ipynb`. This will download Word2Vec embeddings and train the GRU model.
 4. **Train LSTM**: Run `03_train_lstm.ipynb`. This will download GloVe embeddings and train the LSTM model.
-5. **Evaluation**: Run `04_model_comparison.ipynb` to compare the models and view the results.
+5. **Evaluation**: Run `04_inference.ipynb` to compare the models and view the results.
 
 ## Libraries to Install 📚
 
