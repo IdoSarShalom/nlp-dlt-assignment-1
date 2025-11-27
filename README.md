@@ -1,14 +1,14 @@
 # Emotion Analysis with Deep Learning 🎭
 
-Ido Sar Shalom, Dana Gibor
+Dana Gibor(322274234), Ido Sar Shalom(212410146), Natalya Sigal(306688466)
 
 Assignment 1 as part of Bar-Ilan's 83374 "NLP using DL techniques" 🌠.
 
 Implemented in TensorFlow/Keras 🔥.
 
-## Description 🏞️
+## Description 📝
 
-In this project we implement deep learning models for classifying text into **6 emotion categories**: Sadness, Joy, Love, Anger, Fear, and Surprise. We compare two recurrent architectures - **[Bidirectional GRU](https://arxiv.org/abs/1406.1078)** with Word2Vec embeddings and **[Bidirectional LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf)** with GloVe embeddings - achieving **~93-94% accuracy** on social media text.
+In this project we implement deep learning models for classifying text into **6 emotion categories**: Sadness, Joy, Love, Anger, Fear, and Surprise. We compare two recurrent architectures - **[Bidirectional GRU](https://arxiv.org/abs/1406.1078)** with Word2Vec embeddings and **[Bidirectional LSTM](https://www.bioinf.jku.at/publications/older/2604.pdf)** with GloVe embeddings - achieving **~92-93% accuracy** on social media text.
 
 ## The Repository 🧭
 
@@ -21,6 +21,7 @@ We provide here a short explanation about the structure of this repository:
 * `02_train_gru.ipynb` contains the **Bidirectional GRU** architecture training with Word2Vec embeddings.
 * `03_train_lstm.ipynb` contains the **Bidirectional LSTM** architecture training with GloVe embeddings.
 * `04_inference.ipynb` contains the inference pipeline, model evaluation, and side-by-side performance comparison on test data.
+* `report.tex` contains the LaTeX source code for the project report.
 * `requirements.txt` contains the Python package dependencies.
 
 ## Running The Project 🏃
