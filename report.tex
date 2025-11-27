@@ -56,6 +56,8 @@ We adopted a systematic approach, running controlled experiments for each hyperp
     \item \textbf{Dropout Rate:} Tested $0.2-0.6$ to prevent memorization.
 \end{itemize}
 
+\noindent The final configurations were selected based strictly on maximizing \textbf{Validation Accuracy} while minimizing \textbf{Validation Loss}.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{GRU_hyperparameter_tuning_results.jpg}
@@ -100,8 +102,10 @@ Both models exceeded the 75\% target accuracy. Early stopping (patience=5) preve
 \end{tabular}
 \end{table}
 
+\newpage
+
 \subsection{Convergence Analysis}
-The GRU model converged faster (epoch 10-11) with stable loss reduction. The BiLSTM model required more epochs and higher capacity to reach comparable performance.
+The GRU model converged faster (epoch 10-11) with stable loss reduction. The BiLSTM model required more epochs and higher capacity (units) to reach comparable performance.
 
 \begin{figure}[H]
     \centering
@@ -119,16 +123,9 @@ The GRU model converged faster (epoch 10-11) with stable loss reduction. The BiL
 \end{figure}
 
 \section{Conclusion}
-Based on the comparative analysis, the \textbf{GRU model with Word2Vec embeddings} is the optimal configuration.
+Based on the comparative analysis of the validation set, the \textbf{GRU model with Word2Vec embeddings} appears to be the optimal configuration for this emotion classification task.
 
-\paragraph{Justification:}
-\begin{enumerate}
-    \item \textbf{Superior Performance:} Higher validation accuracy (92.80\%) and lower loss (0.1344).
-    \item \textbf{Efficiency:} Required fewer units (96 vs 192), resulting in a lighter model with faster training.
-    \item \textbf{Embedding Quality:} 300d Word2Vec embeddings provided richer semantic features than 200d GloVe.
-\end{enumerate}
-
-The findings demonstrate that the simpler, more efficient GRU architecture, paired with high-dimensional pre-trained embeddings, outperforms the more complex BiLSTM model for this task.
+\noindent While these results strongly favor the GRU architecture, it is important to note that performance on the unseen test set may vary. However, given the consistent superiority in validation metrics and computational efficiency, the GRU model is our recommended candidate for deployment.
 
 \end{document}
 
