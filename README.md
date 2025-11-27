@@ -21,7 +21,7 @@ We provide here a short explanation about the structure of this repository:
 * `02_train_gru.ipynb` contains the **Bidirectional GRU** architecture training with Word2Vec embeddings.
 * `03_train_lstm.ipynb` contains the **Bidirectional LSTM** architecture training with GloVe embeddings.
 * `04_inference.ipynb` contains the inference pipeline, model evaluation, and side-by-side performance comparison on test data.
-* `report.tex` contains the LaTeX source code for the project report.
+* `report.pdf` contains the PDF for the project report.
 * `requirements.txt` contains the Python package dependencies.
 
 ## Running The Project 🏃
