@@ -1,165 +1,104 @@
-\documentclass[11pt, a4paper]{article}
+\documentclass[10pt, a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{geometry}
+\usepackage[margin=0.75in]{geometry}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{float}
 \usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{subcaption}
 
-% Page margins
-\geometry{margin=1in}
+% Reduce section spacing
+\titlespacing*{\section}{0pt}{6pt}{4pt}
+\titlespacing*{\subsection}{0pt}{6pt}{4pt}
+\setlength{\parskip}{2pt}
+
+% Compact lists
+\setlist{nosep}
 
 % Title formatting
-\title{\textbf{Assignment 1 - NLP using DL techniques (83374)}}
+\title{\vspace{-2cm}\textbf{Assignment 1 - NLP using DL techniques (83374)}}
 \author{Dana Gibor (322274234) \and Ido Sar Shalom (212410146) \and Natalya Sigal (306688466)}
-\date{}
+\date{\vspace{-1cm}}
 
 \begin{document}
 
 \maketitle
 
 \section{Introduction}
-This report details the development and evaluation of deep learning models for emotion classification. The objective was to classify textual data into six emotion categories: \textit{Sadness, Joy, Love, Anger, Fear,} and \textit{Surprise}. Two Recurrent Neural Network (RNN) architectures were implemented and compared: \textbf{Gated Recurrent Unit (GRU)} and \textbf{Bidirectional Long Short-Term Memory (BiLSTM)}. The project involved extensive data preprocessing, distinct embedding strategies, systematic hyperparameter tuning, and a comparative analysis of model performance.
+This report details the development of deep learning models for classifying text into six emotion categories: \textit{Sadness, Joy, Love, Anger, Fear,} and \textit{Surprise}. We compared two RNN architectures: \textbf{Gated Recurrent Unit (GRU)} and \textbf{Bidirectional Long Short-Term Memory (BiLSTM)}. The project involved extensive preprocessing, distinct embedding strategies, and systematic hyperparameter tuning.
 
-\section{Development Process}
+\section{Data Preparation}
 
-\subsection{Data Preprocessing}
-A robust preprocessing pipeline was implemented to clean and prepare the textual data. The key steps included:
+\subsection{Preprocessing \& Embeddings}
+A robust pipeline cleaned the data by removing URLs, special characters, and numbers, normalizing to lowercase, and removing stopwords. Duplicates were removed from training data only. We employed distinct pre-trained embeddings:
 \begin{itemize}
-    \item \textbf{Cleaning:} Removal of URLs, special characters, punctuation, extra whitespaces, and numeric values.
-    \item \textbf{Normalization:} Converting all text to lowercase to ensure consistency.
-    \item \textbf{Filtering:} Removal of standard English stopwords (using NLTK) and non-alphanumeric characters.
-    \item \textbf{Duplicate Handling:} Duplicates were strictly removed from the training set to prevent overfitting, while being retained in the validation and test sets to preserve the real-world data distribution.
-\end{itemize}
-
-\subsection{Embedding Strategies}
-Distinct pre-trained word embedding techniques were employed for each architecture, chosen to complement the specific strengths of each recurrent network:
-
-\begin{itemize}
-    \item \textbf{Word2Vec (Google News 300d) with GRU:} Word2Vec is a predictive model that excels at capturing local context and patterns. Since GRUs are designed to be computationally efficient and focus on local temporal patterns, Word2Vec's local context awareness matches this approach perfectly. We utilized 300-dimensional vectors trained on a massive news corpus.
-    \item \textbf{GloVe (Twitter 200d) with BiLSTM:} GloVe is a count-based model that leverages global co-occurrence statistics, making it superior for capturing overall semantic relationships. LSTMs are specifically engineered to handle long-term dependencies; thus, GloVe's global context information complements the LSTM's architectural strengths. We used 200-dimensional vectors trained on Twitter data, which aligns well with the short, informal nature of the emotion dataset.
+    \item \textbf{Word2Vec (Google News 300d) for GRU:} Captures local context, matching GRU's efficiency with local patterns.
+    \item \textbf{GloVe (Twitter 200d) for BiLSTM:} Leverages global co-occurrence statistics, complementing LSTM's long-term dependency handling.
 \end{itemize}
 
 \section{Model Architectures \& Experiments}
+Both models use a sequential architecture: Embedding $\rightarrow$ Bidirectional RNN $\rightarrow$ BatchNorm $\rightarrow$ Dropout $\rightarrow$ Dense (ReLU) $\rightarrow$ Dropout $\rightarrow$ Output.
 
-Both models utilized a sequential architecture comprising an Embedding layer, a Bidirectional Recurrent layer, Batch Normalization, Dropout for regularization, and Dense layers for classification.
-
-\subsection{Hyperparameter Tuning Methodology}
-To determine the optimal model configuration, we adopted a systematic experimental approach rather than relying on default values. We conducted controlled experiments for each key hyperparameter to understand its specific effect on performance.
+\subsection{Hyperparameter Tuning}
+We systematically tested Learning Rate (0.0001--0.01), Batch Size (16--128), Hidden Units (64--256), and Dropout (0.2--0.6) to maximize validation accuracy.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.0\textwidth]{GRU_hyperparameter_tuning_results.jpg}
-    \caption{Impact of various hyperparameters on GRU model performance.}
+    \includegraphics[width=0.85\textwidth]{GRU_hyperparameter_tuning_results.jpg}
+    \caption{Impact of hyperparameters on GRU model performance.}
     \label{fig:gru_tuning}
 \end{figure}
 
-We conducted controlled experiments for each key hyperparameter to understand its specific effect on performance:
-\begin{itemize}
-    \item \textbf{Learning Rate:} Tested from $0.0001$ to $0.01$. This controls the step size in gradient descent; finding the "sweet spot" was crucial to ensure convergence without instability.
-    \item \textbf{Batch Size:} Tested sizes of 16, 32, 64, and 128. We found that smaller batches often provided a regularizing effect and better generalization for this dataset.
-    \item \textbf{Hidden Units:} Tested from 64 to 256. This determines the model's capacity. We aimed to find the minimum capacity needed to learn the patterns to avoid overfitting.
-    \item \textbf{Dropout Rate:} Tested from 0.2 to 0.6. This regularization was essential to prevent the model from memorizing the training data.
-\end{itemize}
-The final configurations were selected based strictly on maximizing \textbf{Validation Accuracy} while minimizing \textbf{Validation Loss}.
+\subsection{Optimal Configurations}
+\textbf{GRU (Word2Vec):} The optimal configuration was \textbf{LR: 0.005, Batch: 16, Units: 96, Dropout: 0.4} with \textbf{Adam} optimizer and Frozen embeddings. This yielded the highest accuracy (0.9345) and lowest loss. Frozen embeddings slightly outperformed fine-tuned ones (0.9340 vs 0.9210).
 
-\subsection{GRU Architecture (Word2Vec)}
-\begin{itemize}
-    \item \textbf{Structure:} Embedding (Frozen) $\rightarrow$ Bidirectional GRU $\rightarrow$ BatchNormalization $\rightarrow$ Dropout $\rightarrow$ Dense (ReLU) $\rightarrow$ Dropout $\rightarrow$ Output (Softmax).
-    \item \textbf{Hyperparameter Tuning:} Systematic experiments were conducted to optimize Learning Rate, Batch Size, GRU Units, Dropout Rate, and Optimizer.
-\end{itemize}
+\textbf{BiLSTM (GloVe):} The best setup was \textbf{LR: 0.001, Batch: 32, Units: 192, Dropout: 0.3} with \textbf{Adam}. It required lower learning rates and significantly more units than GRU to reach peak performance (0.9250).
 
-\textbf{Key Experimental Results (GRU):}
-\begin{itemize}
-    \item \textbf{Learning Rate:} 0.005 yielded the highest accuracy (0.9345).
-    \item \textbf{Batch Size:} Smaller batch sizes performed better; 16 was optimal (0.9305).
-    \item \textbf{Units:} 96 units provided the best balance of capacity and generalization (0.9360).
-    \item \textbf{Dropout:} A rate of 0.4 was optimal (0.9290).
-    \item \textbf{Optimizer:} Adam outperformed RMSprop and SGD significantly.
-    \item \textbf{Embedding:} Frozen embeddings performed slightly better (0.9340) than fine-tuned ones, likely preventing overfitting on the relatively small dataset.
-\end{itemize}
-
-\textbf{Optimal GRU Configuration:}
-\begin{center}
-LR: 0.005 \quad|\quad Batch: 16 \quad|\quad Units: 96 \quad|\quad Dropout: 0.4 \quad|\quad Optimizer: Adam \quad|\quad Embeddings: Frozen
-\end{center}
-
-\subsection{BiLSTM Architecture (GloVe)}
-\begin{itemize}
-    \item \textbf{Structure:} Embedding (Frozen) $\rightarrow$ Bidirectional LSTM $\rightarrow$ BatchNormalization $\rightarrow$ Dropout $\rightarrow$ Dense (ReLU) $\rightarrow$ Dropout $\rightarrow$ Output (Softmax).
-    \item \textbf{Hyperparameter Tuning:} Similar systematic experiments were conducted for the LSTM model.
-\end{itemize}
-
-\textbf{Key Experimental Results (BiLSTM):}
-\begin{itemize}
-    \item \textbf{Learning Rate:} 0.001 was optimal (0.9250), notably lower than the GRU's optimal rate.
-    \item \textbf{Batch Size:} 32 performed best (0.9165).
-    \item \textbf{Units:} Required significantly more capacity; 192 units were optimal (0.9195).
-    \item \textbf{Dropout:} A rate of 0.3 was sufficient (0.9245).
-    \item \textbf{Optimizer:} Adam was consistently the best optimizer.
-    \item \textbf{Embedding:} Frozen embeddings again proved superior (0.9140).
-\end{itemize}
-
-\textbf{Optimal BiLSTM Configuration:}
-\begin{center}
-LR: 0.001 \quad|\quad Batch: 32 \quad|\quad Units: 192 \quad|\quad Dropout: 0.3 \quad|\quad Optimizer: Adam \quad|\quad Embeddings: Frozen
-\end{center}
-
-\section{Results \& Convergence Analysis}
-
-Both models successfully converged and significantly exceeded the target accuracy of 75\%. Early stopping (patience=5) was employed to prevent overfitting.
+\section{Results \& Convergence}
+Both models exceeded the 75\% target accuracy, with GRU converging faster ($\sim$10 epochs) than BiLSTM ($\sim$15 epochs).
 
 \begin{table}[H]
 \centering
-\caption{Performance Comparison Summary}
+\small
+\caption{Performance Comparison}
 \label{tab:comparison}
 \begin{tabular}{lcc}
 \toprule
-\textbf{Metric} & \textbf{GRU Model} & \textbf{BiLSTM Model} \\
+\textbf{Metric} & \textbf{GRU (Word2Vec)} & \textbf{BiLSTM (GloVe)} \\
 \midrule
-\textbf{Embedding} & Word2Vec (300d) & GloVe (200d) \\
-\textbf{Validation Accuracy} & \textbf{92.80\%} & 91.65\% \\
-\textbf{Validation Loss} & \textbf{0.1344} & 0.1998 \\
-\textbf{Optimal Units} & 96 & 192 \\
-\textbf{Converged Epochs} & $\sim$10 & $\sim$15 \\
+Validation Accuracy & \textbf{92.80\%} & 91.65\% \\
+Validation Loss & \textbf{0.1344} & 0.1998 \\
+Optimal Units & 96 & 192 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Convergence Analysis}
-\begin{itemize}
-    \item \textbf{GRU:} Converged quickly, typically stabilizing around epoch 10-11. It demonstrated stable loss reduction and achieved high validation accuracy early in the training process.
-    \item \textbf{BiLSTM:} Required more epochs and a larger number of hidden units (192 vs 96) to reach comparable performance. This indicates a higher computational cost for similar results compared to the GRU.
-\end{itemize}
-
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{GRU_training.jpg}
-    \caption{GRU Model Training History: Accuracy and Loss over epochs.}
-    \label{fig:gru_history}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{LSTM_training.jpg}
-    \caption{BiLSTM Model Training History: Accuracy and Loss over epochs.}
-    \label{fig:lstm_history}
+    \begin{subfigure}{0.48\textwidth}
+        \includegraphics[width=\linewidth]{GRU_training.jpg}
+        \caption{GRU Training History}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \includegraphics[width=\linewidth]{LSTM_training.jpg}
+        \caption{BiLSTM Training History}
+    \end{subfigure}
+    \caption{Training Accuracy and Loss over epochs.}
+    \label{fig:training_history}
 \end{figure}
 
 \section{Conclusion}
-
-Based on the comparative analysis, the \textbf{GRU model with Word2Vec embeddings} is the optimal configuration for this emotion classification task.
-
-\paragraph{Justification:}
+The \textbf{GRU model with Word2Vec} is the optimal configuration.
 \begin{enumerate}
-    \item \textbf{Superior Performance:} The GRU model achieved a higher validation accuracy (92.80\% vs 91.65\%) and significantly lower validation loss (0.1344 vs 0.1998), indicating better generalization.
-    \item \textbf{Efficiency:} The GRU architecture required fewer units (96 vs 192) to achieve peak performance. This results in a model with fewer parameters, leading to faster training and inference times.
-    \item \textbf{Embedding Quality:} The 300-dimensional Word2Vec embeddings provided richer semantic features compared to the 200-dimensional GloVe embeddings, contributing to the model's superior ability to distinguish between subtle emotional nuances.
+    \item \textbf{Performance:} Higher accuracy (92.80\% vs 91.65\%) and lower loss.
+    \item \textbf{Efficiency:} Required fewer units (96 vs 192), leading to a lighter, faster model.
+    \item \textbf{Embeddings:} 300d Word2Vec embeddings likely provided richer features than 200d GloVe.
 \end{enumerate}
-
-The findings demonstrate that a simpler, more efficient recurrent architecture (GRU), when paired with high-dimensional pre-trained embeddings, can outperform a more complex BiLSTM model for this specific text classification task.
+Thus, the simpler GRU architecture paired with high-dimensional embeddings outperforms the more complex BiLSTM for this task.
 
 \end{document}
 
