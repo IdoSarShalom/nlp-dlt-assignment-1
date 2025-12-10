@@ -27,6 +27,18 @@
 \section{Introduction}
 This report details the development and evaluation of deep learning models for classifying text into six emotion categories: \textit{Sadness, Joy, Love, Anger, Fear,} and \textit{Surprise}. We implemented and compared two RNN architectures: \textbf{Gated Recurrent Unit (GRU)} and \textbf{Bidirectional Long Short-Term Memory (BiLSTM)}. The project involved extensive data preprocessing, distinct embedding strategies, systematic hyperparameter tuning, and a comparative analysis to identify the optimal approach.
 
+\section{Exploratory Data Analysis}
+Before proceeding to data preparation, we conducted an analysis of the class balance within the dataset.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{class_distribution_placeholder.jpg}
+    \caption{Distribution of Emotion Classes.}
+    \label{fig:class_dist}
+\end{figure}
+
+\noindent The distribution, as illustrated in Figure \ref{fig:class_dist}, reveals a significant class imbalance. The dataset is dominated by \textit{Joy} (33.5\%) and \textit{Sadness} (29.2\%), which together constitute over 60\% of the samples. In contrast, classes such as \textit{Surprise} (3.6\%) and \textit{Love} (8.2\%) are heavily underrepresented. This disparity suggests a potential bias where the model may favor majority classes.
+
 \section{Data Preparation}
 
 \subsection{Data Preprocessing}
@@ -56,6 +68,8 @@ We adopted a systematic approach, running controlled experiments for each hyperp
     \item \textbf{Dropout Rate:} Tested $0.2-0.6$ to prevent memorization.
 \end{itemize}
 
+\noindent To manage computational constraints effectively, we employed a pragmatic \textbf{One-Factor-at-a-Time (OFAT)} tuning strategy instead of an exhaustive Grid Search. This heuristic approach involved establishing a baseline configuration and systematically varying one hyperparameter (e.g., Learning Rate) while holding all others constant.
+
 \noindent The final configurations were selected based strictly on maximizing \textbf{Validation Accuracy} while minimizing \textbf{Validation Loss}.
 
 \begin{figure}[H]
@@ -82,7 +96,7 @@ Systematic tuning yielded the following optimal configurations:
     \item \textbf{Result:} Required lower learning rate and significantly more capacity (192 vs 96 units) than GRU.
 \end{itemize}
 
-\section{Results \& Convergence Analysis}
+\section{Results}
 Both models exceeded the 75\% target accuracy. Early stopping (patience=5) prevented overfitting.
 
 \begin{table}[H]
@@ -101,6 +115,18 @@ Both models exceeded the 75\% target accuracy. Early stopping (patience=5) preve
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Error Analysis}
+To gain deeper insights into model performance, we examined the confusion matrix of the GRU network.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{confusion_matrix_placeholder.jpg}
+    \caption{Confusion Matrix for the GRU model.}
+    \label{fig:conf_matrix}
+\end{figure}
+
+\noindent The analysis reveals that while the model generally performs well, there are notable shared misclassifications. In particular, we observe confusion between similar emotions like \textit{Fear} and \textit{Sadness} or \textit{Love} and \textit{Joy}. This overlap is likely due to the shared vocabulary and semantic proximity of these emotions, a pattern that was observed to affect the BiLSTM model as well.
 
 \newpage
 
