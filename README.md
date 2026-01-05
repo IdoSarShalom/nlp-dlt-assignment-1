@@ -1,6 +1,6 @@
 # Emotion Analysis with Deep Learning 🎭
 
-Dana Gibor(322274234), Ido Sar Shalom(212410146), Natalya Sigal(306688466)
+Dana Gibor, Ido Sar Shalom, Natalya Sigal
 
 Assignment 1 as part of Bar-Ilan's 83374 "NLP using DL techniques" 🌠.
 
